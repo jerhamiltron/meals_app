@@ -13,81 +13,103 @@ class MealDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(meal.title),
       ),
-      body: Column(
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 3,
+              clipBehavior: Clip.hardEdge,
+              child: FadeInImage(
+                image: NetworkImage(meal.imageUrl),
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+                placeholder: MemoryImage(kTransparentImage),
+              ),
             ),
-            elevation: 3,
-            clipBehavior: Clip.hardEdge,
-            child: FadeInImage(
-              image: NetworkImage(meal.imageUrl),
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
-              placeholder: MemoryImage(kTransparentImage),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              const Text(
-                'Ingredients',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Text(
+                  'Ingredients',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary),
                 ),
-                width: 250,
-              ),
-              const SizedBox(height: 4),
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: meal.ingredients.length,
-                itemBuilder: (ctx, index) => Text(
-                  meal.ingredients[index],
-                  textAlign: TextAlign.center,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).colorScheme.primary),
+                  ),
+                  width: 250,
                 ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Recipe',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white),
-                ),
-                width: 250,
-              ),
-              const SizedBox(height: 4),
-              Container(
-                width: 300,
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: meal.steps.length,
-                  itemBuilder: (ctx, index) => Column(
+                const SizedBox(height: 4),
+                Container(
+                  width: 200,
+                  child: Column(
                     children: [
-                      Text(
-                        '${index + 1}: ${meal.steps[index]}',
-                        textAlign: TextAlign.center,
-                        maxLines: 3,
-                        softWrap: true,
-                      ),
-                      const SizedBox(height: 4),
+                      for (final ingredient in meal.ingredients)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 6,
+                          ),
+                          child: Text(
+                              '${meal.ingredients.indexOf(ingredient) + 1}: $ingredient',
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              softWrap: true,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(height: 24),
+                Text(
+                  'Recipe',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  width: 250,
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  width: 300,
+                  child: Column(
+                    children: [
+                      for (final step in meal.steps)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                          child: Text('${meal.steps.indexOf(step) + 1}: $step',
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              softWrap: true,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
