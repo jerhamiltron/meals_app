@@ -1,17 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/models/meal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class MealDetailsScreen extends StatelessWidget {
-  const MealDetailsScreen({super.key, required this.meal});
+// models
+import 'package:meals_app/models/meal.dart';
+
+// Providers
+import 'package:meals_app/providers/favorites_provider.dart';
+
+class MealDetailsScreen extends ConsumerWidget {
+  const MealDetailsScreen({
+    super.key,
+    required this.meal,
+  });
 
   final Meal meal;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final addedToFavorites =
+                  ref.read(favoritesProvider.notifier).selectFavorite(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(
+                    addedToFavorites
+                        ? 'Added to favorites'
+                        : 'Removed from favorites',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.favorite),
+            color: ref.watch(favoritesProvider).contains(meal)
+                ? Colors.red[300]
+                : Colors.white,
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -108,6 +141,7 @@ class MealDetailsScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 48),
           ],
         ),
       ),
