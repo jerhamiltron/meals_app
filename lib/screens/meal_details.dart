@@ -18,6 +18,8 @@ class MealDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoritesProvider).contains(meal);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
@@ -39,10 +41,18 @@ class MealDetailsScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.favorite),
-            color: ref.watch(favoritesProvider).contains(meal)
-                ? Colors.red[300]
-                : Colors.white,
+            icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+            // icon: AnimatedSwitcher(
+            //   transitionBuilder: (child, animation) {
+            //     return RotationTransition(
+            //         turns: Tween(begin: 0.7, end: 1.0).animate(animation),
+            //         child: child);
+            //   },
+            //   duration: const Duration(milliseconds: 500),
+            //   child: Icon(isFavorite ? Icons.star : Icons.star_border,
+            //       key: ValueKey(isFavorite)),
+            // ),
+            color: isFavorite ? Colors.red[300] : Colors.white,
           )
         ],
       ),
@@ -55,12 +65,15 @@ class MealDetailsScreen extends ConsumerWidget {
               ),
               elevation: 3,
               clipBehavior: Clip.hardEdge,
-              child: FadeInImage(
-                image: NetworkImage(meal.imageUrl),
-                fit: BoxFit.cover,
-                height: 200,
-                width: double.infinity,
-                placeholder: MemoryImage(kTransparentImage),
+              child: Hero(
+                tag: meal.id,
+                child: FadeInImage(
+                  image: NetworkImage(meal.imageUrl),
+                  fit: BoxFit.cover,
+                  height: 200,
+                  width: double.infinity,
+                  placeholder: MemoryImage(kTransparentImage),
+                ),
               ),
             ),
             Column(
